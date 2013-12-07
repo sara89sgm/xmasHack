@@ -22,10 +22,31 @@ Parse.Cloud.define("destroyCarol", function(request, response) {
   
 });
 
+//also not tested!
+function makeURL(){
+  var trackUrl = '/public/eminem-the-monster-feat.mp3';
+  var twiml = new twiliolib.TwimlResponse();
+  return twiml.play(trackUrl).toString();
+}
+
 Parse.Cloud.define("receiveSMS", function(request, response) {
   console.log("Received a new text: " + request.params.From);
 
- 	
+
+  // I haven't tested this!
+  twilio.makeCall({
+	    to: request.params.From, 
+	    from: '+441753463246', 
+	    url: makeURL() // this may need to be an endpoint
+	  }, function(err, responseData) { 
+	    if (err) {
+	      console.log(err);
+	    } else { 
+	      console.log(responseData.from); 
+	      console.log(responseData.body);
+	    }
+	  }
+	);
 	// Send an SMS message
 	twilio.sendSms({
 	    to: request.params.From, 
