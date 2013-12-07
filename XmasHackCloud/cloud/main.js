@@ -1,5 +1,5 @@
 var remixer = require('cloud/remix.js');
-var twilio = require('twilio')('AC6fce2fb8441b4279897882f82ad80ed3', 'c1805ed5bd9fc3a8d17a200688421600');
+var twilio = require('twilio')('AC8183497cebb16c724f8a12bf235467bf', '56b4b4677822b38484de1112b15079d5');
 var twiliolib = require('twilio')
 
 // Use Parse.Cloud.define to define as many cloud functions as you want.
@@ -23,12 +23,12 @@ Parse.Cloud.define("destroyCarol", function(request, response) {
   
 });
 
-//also not tested!
-function makeURL(){
-  var trackUrl = '/public/eminem-the-monster-feat.mp3';
-  var twiml = new twiliolib.TwimlResponse();
-  return twiml.play(trackUrl).toString();
-}
+Parse.Cloud.define("urlSong", function(request, response){
+	var trackUrl = 'http://xmashackmhd13.parseapp.com/eminem-the-monster-feat.mp3';
+  	var twiml = new twiliolib.TwimlResponse();
+  	console.log("url song called");
+  	response.success(twiml.play(trackUrl).toString());
+});
 
 Parse.Cloud.define("receiveSMS", function(request, response) {
   console.log("Received a new text: " + request.params.From);
@@ -37,8 +37,8 @@ Parse.Cloud.define("receiveSMS", function(request, response) {
   // I haven't tested this!
   twilio.makeCall({
 	    to: request.params.From, 
-	    from: '+441753463246', 
-	    url: makeURL() // this may need to be an endpoint
+	    from: '+441753463215', 
+	    url: 'https://XR0ZKYGKkZkbSJhl0wQPReSrqHtiVOewuPnWnGsW:javascript-key=GE6l0oAiQHxWDIDiXV2odZ3b8qEqLy9WzZc0LTno@api.parse.com/1/functions/urlSong' // this may need to be an endpoint
 	  }, function(err, responseData) { 
 	    if (err) {
 	      console.log(err);
@@ -48,11 +48,12 @@ Parse.Cloud.define("receiveSMS", function(request, response) {
 	    }
 	  }
 	);
+  console.log("Making call");
 	// Send an SMS message
 	twilio.sendSms({
 	    to: request.params.From, 
-	    from: '+441753463246', 
-	    body: 'Hello world!'
+	    from: '+441753463215', 
+	    body: 'Xmas Hack'
 	  }, function(err, responseData) { 
 	    if (err) {
 	      console.log(err);
