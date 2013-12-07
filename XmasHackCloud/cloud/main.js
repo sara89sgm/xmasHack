@@ -39,7 +39,7 @@ Parse.Cloud.define("destroyCarol", function(request, response) {
 Parse.Cloud.define("receiveSMS", function(request, response) {
   console.log("Received a new text: " + request.params.From);
 
- 
+ 	
 	// Send an SMS message
 	twilio.sendSms({
 	    to: request.params.From, 
@@ -57,6 +57,41 @@ Parse.Cloud.define("receiveSMS", function(request, response) {
   response.success();
 });
 
+Parse.Cloud.define("addTrack", function(request, response) {
 
+
+
+var url = 'http://labs.echonest.com/SCAnalyzer/analyze?id='+request.params.idtrack;
+console.log(url);
+
+    Parse.Cloud.httpRequest({
+		url: url,
+
+		success: function(httpResponse) {
+			var track_id = httpResponse.data.trid;
+			console.log(track_id);
+			var Track = Parse.Object.extend("Track");
+			var track = new Track();
+			 
+			track.set("ec_trid", track_id );
+			track.set("type", request.params.type);
+			 
+			track.save(null, {
+			  success: function(track) {
+			    response.success(track);
+			  },
+			  error: function(gameScore, error) {
+			    console.log('Failed to create new object, with error code: ' + error.description);
+			  }
+			});
+			
+		},
+		error: function(httpResponse) {
+		    def.resolve("Error");
+		}
+	});
+	
+ 
+});
 
 
