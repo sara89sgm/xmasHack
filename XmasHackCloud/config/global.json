@@ -1,0 +1,11 @@
+{
+    "applications": {
+        "XmasHack": {
+            "applicationId": "XR0ZKYGKkZkbSJhl0wQPReSrqHtiVOewuPnWnGsW", 
+            "masterKey": "PURI2Sl1o0BBKjEhbl4Klxgpv4DRMkyZXBUT1H0m"
+        }, 
+        "_default": {
+            "link": "XmasHack"
+        }
+    }
+}
