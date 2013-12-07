@@ -5,34 +5,20 @@ var twilio = require('twilio')('AC6fce2fb8441b4279897882f82ad80ed3', 'c1805ed5bd
 // For example:
 Parse.Cloud.define("destroyCarol", function(request, response) {
 
-
-
-	// var User = Parse.Object.extend("User");
-	// var query = new Parse.Query(User);
-	// query.equalTo("fbId", request.params.channel );
-	// query.first({
-	//   success: function(result) {
-	//   	var id= result.id;
-	//   	var chan = 'GOS'+id;
-	//   	Parse.Push.send({
-	// 	  channels: [ chan],
-	// 	  data: {
-	// 	    alert: 'New Gossapp Message',
-	// 	    from: request.params.usuario,
-	// 	  }
-	// 	}, {
-	// 	  success: function() {
-	// 	    response.success();
-	// 	  },
-	// 	  error: function(error) {
-	// 	    response.error();
-	// 	  }
-	// 	});
-	//   },
-	//   error: function(error) {
-	//     alert("Error: " + error.code + " " + error.message);
-	//   }
-	// });
+	var Track = Parse.Object.extend("track");
+	var queryXmas = new Parse.Query(Track);
+	queryXmas.equalTo("type", "xmas");
+	queryXmas.first({
+		success: function(xmasTrack){
+			var queryPop = new Parse.Query(Track);
+			queryPop.notEqualTo("type", "xmas");
+			queryPop.first({
+				success: function(popTrack){
+					mixTracks(xmasTrack, popTrack);
+				}
+			})
+		}
+	})
   
 });
 
@@ -59,8 +45,6 @@ Parse.Cloud.define("receiveSMS", function(request, response) {
 
 Parse.Cloud.define("addTrack", function(request, response) {
 
-
-
 var url = 'http://labs.echonest.com/SCAnalyzer/analyze?id='+request.params.idtrack;
 console.log(url);
 
@@ -75,6 +59,7 @@ console.log(url);
 			 
 			track.set("ec_trid", track_id );
 			track.set("type", request.params.type);
+			track.set("url_id", request.params.idtrack);
 			 
 			track.save(null, {
 			  success: function(track) {
@@ -90,8 +75,6 @@ console.log(url);
 		    def.resolve("Error");
 		}
 	});
-	
- 
 });
 
 
