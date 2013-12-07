@@ -1,5 +1,6 @@
 var remixer = require('cloud/remix.js');
 var twilio = require('twilio')('AC6fce2fb8441b4279897882f82ad80ed3', 'c1805ed5bd9fc3a8d17a200688421600');
+var twiliolib = require('twilio')
 
 // Use Parse.Cloud.define to define as many cloud functions as you want.
 // For example:
