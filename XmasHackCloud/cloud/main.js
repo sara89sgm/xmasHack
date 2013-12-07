@@ -38,10 +38,10 @@ Parse.Cloud.define("destroyCarol", function(request, response) {
 
 Parse.Cloud.define("receiveSMS", function(request, response) {
   console.log("Received a new text: " + request.params.From);
-  var client = require('twilio')
+
  
 	// Send an SMS message
-	client.sendSms({
+	twilio.sendSms({
 	    to: request.params.From, 
 	    from: '+441753463246', 
 	    body: 'Hello world!'
@@ -56,4 +56,7 @@ Parse.Cloud.define("receiveSMS", function(request, response) {
 	);
   response.success();
 });
+
+
+
 
