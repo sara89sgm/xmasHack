@@ -1,4 +1,4 @@
-var twilio = require('twilio')('AC8183497cebb16c724f8a12bf235467bf', '56b4b4677822b38484de1112b15079d5');
+var twilio = require('twilio')('AC6fce2fb8441b4279897882f82ad80ed3', 'c1805ed5bd9fc3a8d17a200688421600');
 var twiliolib = require('twilio');
 
 exports.getRemix = function(numberTo, id, response) {
@@ -8,15 +8,13 @@ exports.getRemix = function(numberTo, id, response) {
 	remixQuery.equalTo('xmas_id', id);
 	remixQuery.find({
 		success: function(results){
-			console.log(results);
 			if(results.length>0){
-				console.log(results.length);
 				exports.sendRemix(numberTo, id, response);
 				
 			}else{
 				twilio.sendSms({
 				    to: numberTo, 
-				    from: '+441753463215', 
+				    from: '+441633538987', 
 				    body: 'We cannot destroy that carol now, check in 2 min again, F*** Xmas!'
 				}, function(err, responseData) { 
 				    if (err) {
@@ -41,7 +39,7 @@ exports.getRemix = function(numberTo, id, response) {
 var callRemix = function(numberTo, id, response){
 	twilio.makeCall({
 	    to: numberTo, 
-	    from: '+441753463215', 
+	    from: '+441633538987', 
 	    url: 'http://xmashackmhd13.parseapp.com/urlSong?id='+id // this may need to be an endpoint
 	}, function(err, responseData) { 
 	    if (err) {
@@ -87,10 +85,11 @@ exports.createRemix = function(id){
 }
 
 exports.sendRemix = function(numberTo, id, response){
+	console.log("Calling the user");
 	twilio.makeCall({
 	    to: numberTo, 
-	    from: '+441753463215', 
-	    url: 'http://xmashackmhd13.parseapp.com/urlSong?id='+id // this may need to be an endpoint
+	    from: '+441633538987', 
+	    url: 'http://xmashackmhd13.parseapp.com/urlSong?id='+id 
 	}, function(err, responseData) { 
 	    if (err) {
 	      console.log(err);

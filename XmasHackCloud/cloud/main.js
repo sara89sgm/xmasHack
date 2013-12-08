@@ -1,5 +1,5 @@
 
-var twilio = require('twilio')('AC8183497cebb16c724f8a12bf235467bf', '56b4b4677822b38484de1112b15079d5');
+var twilio = require('twilio')('AC6fce2fb8441b4279897882f82ad80ed3', 'c1805ed5bd9fc3a8d17a200688421600');
 var twiliolib = require('twilio');
 require('cloud/app.js');
 var xmasMixer = require('cloud/xmasMixer.js');
@@ -19,9 +19,9 @@ Parse.Cloud.define("receiveSMS", function(request, response) {
 Parse.Cloud.define("helpXmas", function(request, response) {
   	console.log("Received a new text: " + request.params.From);
 
-  	var body = request.params.body;
-  	if(body === 'help'){
-  		var numberTo = request.params.From;
+  	var body = request.params.Body;
+  	var numberTo = request.params.From;
+  	if(body.toUpperCase() === 'HELP XMAS'){
   		var remix = Parse.Object.extend("Remix");
 		var remixQuery = new Parse.Query(remix);
 		remixQuery.find({
@@ -40,11 +40,11 @@ Parse.Cloud.define("helpXmas", function(request, response) {
 			}
 		});
   	}else{
-  		console.log("Sendind sms");
+  		console.log("Sendind sms", numberTo);
 		twilio.sendSms({
 		    to: numberTo, 
-		    from: '+441753463215', 
-		    body: 'Do you need help with xmas carols??? send me a sms with the word: help'
+		    from: '+441633538987', 
+		    body: 'buuuuu'
 		}, function(err, responseData) { 
 		    if (err) {
 		      console.log(err);
