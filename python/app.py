@@ -1,10 +1,14 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, jsonify
 import echonest.remix.audio as audio
+from echonest.remix.audio import config
+import os
+import requests
 
-from audio import config
-    config.ECHO_NEST_API_KEY="MXG5OCMN63QJ1C5OM"
+config.ECHO_NEST_API_KEY="MXG5OCMN63QJ1C5OM"
 
 app = Flask(__name__)
+
+AUDIO_DIR = '../XmasHackCloud/public/'
 
 @app.route('/test3')
 def return_qtip():
@@ -15,14 +19,13 @@ def return_qtip():
 
 @app.route('/test')
 def fetch_mp3():
-  
   fname_xmas = requests.args.get('xmas_file')
   fname_mixer = requests.args.get('mixer_file')
   print fname
 
   # This takes your input track, sends it to the analyzer, and returns the results.  
-  audiofile_xmas = audio.LocalAudioFile('../XmasHackCloud/public/'+fname_xmas)
-  audiofile_mixer = audio.LocalAudioFile('../XmasHackCloud/public/'+fname_mixer)
+  audiofile_xmas = audio.LocalAudioFile(AUDIO_DIR+fname_xmas)
+  audiofile_mixer = audio.LocalAudioFile(AUDIO_DIR+fname_mixer)
 
   # This gets a list of every bar in the track.  
   # You can manipulate this just like any other Python list!
@@ -60,13 +63,67 @@ def blah():
   response.headers['Content-Type'] = 'audio/mpeg'
   return response
 
-@app.route('/deezer')
+def url_to_file(url):
+  dz_id = url.split('/')[-1]
+  if not dz_id.endswith('.mp3'):
+    dz_id += '.mp3'
+  return AUDIO_DIR + dz_id
+
+def process_mix(fin,fout):
+  af = audio.LocalAudioFile(fin)
+  horn = audio.LocalAudioFile(AUDIO_DIR + 'airhorn.wav')
+  out = audio.AudioData()
+  #out.append([b for b in horn.analysis.bars])
+  #audio.getpieces(af,out).encode(fout)
+  #audio.getpieces(j
+
+@app.route('/audio/<fname>')
+def return_audio(fname):
+  # TODO find static method...
+  fname = AUDIO_DIR + fname
+  mp3 = open(fname,'rb')
+  response = make_response(mp3.read())
+  response.headers['Content-Type'] = 'audio/mpeg'
+  return response
+
+@app.route('/deezer',methods=['POST'])
 def download_and_mix():
+  #url = request.json['url']
+  #url = request.form['url']
   url = request.args.get('url')
-  resp = requests.get(url)
+  mix_id = request.args.get('id')
+  is_xmas = request.args.get('type')
 
+  if not url or not mix_id:
+    return 'broken'
+
+  #check to see if exists locally
+  #out_f = url_to_file(url)
+  mix_f = AUDIO_DIR + mix_id + '_mix.mp3'
+  out_f = AUDIO_DIR + mix_id + '_orig.mp3'
+
+  if os.path.isfile(mix_f):
+    return jsonify({'url':'/audio/'+mix_id+'_mix.mp3'})
+
+  if not os.path.isfile(out_f):
+    fid = open(out_f,'wb')
+    resp = requests.get(url)
+    for block in resp.iter_content(1024):
+      if not block:
+        break
+      fid.write(block)
+    fid.close()
+
+  print is_xmas
+
+  if not is_xmas:
+    return jsonify({'url':''})
+  
+  process_mix(out_f,mix_f)
+  # DO SOME MIXING!
+
+  return jsonify({'url':'/audio/'+mix_id+'_mix.mp3'})
   # get mp3/ save
-
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0',port=8080, debug=True)
