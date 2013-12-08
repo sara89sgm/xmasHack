@@ -30,5 +30,13 @@ def blah():
   response.headers['Content-Type'] = 'audio/mpeg'
   return response
 
+@app.route('/deezer')
+def download_and_mix():
+  url = request.args.get('url')
+  resp = requests.get(url)
+
+  # get mp3/ save
+
+
 if __name__ == '__main__':
   app.run(host='0.0.0.0',port=8080, debug=True)
